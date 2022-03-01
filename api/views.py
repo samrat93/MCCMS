@@ -1,18 +1,23 @@
 
-from rest_framework import status
-from django.shortcuts import render
-from rest_framework.response import Response
+from tokenize import Token
+from django import views
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
 from rest_framework import generics, permissions
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view
+from .permission import UpdateOwnProfile
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.settings import api_settings
 
 
 
 # Create your views here.
+class UserLoginApiView(ObtainAuthToken):
+    """ Django login for tokan authentication """
+
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
 
 class StateApiViewSet(viewsets.ModelViewSet):
     serializer_class = StateSerializer
@@ -56,52 +61,14 @@ class ComplaintApiViewSet(viewsets.ModelViewSet):
 #     permission_classes = [permissions.IsAdminUser]
 
 
-# class UserRegistrationViewSet(viewsets.ModelViewSet):
-#     queryset = UserData.objects.all()
-#     serializer_class = UserDataSerializer
 
-#     @action(detail=True,methods=['post'],permission_classes=[AllowAny])
-#     def register(self,request):
-#         serializer = UserRegistrationSerializer(data = request.data)
-#         serializer.is_valid(raise_exception=True)
-
-#         model_serializer = UserDataSerializer(data = serializer.data)
-#         model_serializer.is_valid(raise_exception=True)
-#         model_serializer.save()
-
-#         return Response(model_serializer.data)
-
-#     @action(detail=True,methods=['get'])
-#     def info(self,request):
-#         serializer = UserDataSerializer(request.user)
-#         return Response(serializer.data)
-
-#     def list(self,request):
-#         user = request.user
-#         if not user or not user.is_superuser:
-#             return HttpResponseForbidden()
-#         return super(UserRegistrationViewSet,self).list(request)
-
-#     def update(self,request,pk=None):
-#         user = UserData.objects.filter(id=pk).first()
-#         if not user or request.user != user:
-#             return HttpResponseForbidden()
-#         return super(UserRegistrationViewSet,self).update(request)
-
-# def UserRegistrationViewSet(viewsets.ModelViewSet):
+class UserRegistrationViewSet(viewsets.ModelViewSet):
+    serializer_class = UserRegistrationSerializer
+    queryset = UserData.objects.all()
+    authentication_class = (TokenAuthentication)
+    permission_classes = [UpdateOwnProfile]
 
 
-@api_view(['POST',])
-def registration_view(request):
-    if request.method == 'POST':
-        serializer = UserRegistrationSerializer(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            userdata = serializer.save()
-            data['response'] = 'successfully registered a new user'
-            data['email'] = userdata.email
-            data['username'] = userdata.username
-        else:
-            data = serializer.errors
-        return Response(data)
 
+    
+    

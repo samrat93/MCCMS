@@ -1,6 +1,6 @@
-from click import style
 from rest_framework import serializers
 from api.models import *
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -41,54 +41,82 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
 
 
-class UserDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserData
-        fields = ['id','username','email','user_type','password']
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
-
-
-
-# class UserRegistrationSerializer(serializers.Serializer):
-#     username = serializers.CharField()
-#     email = serializers.EmailField()
-#     password = serializers.CharField()
-#     confirm_password = serializers.CharField()
-
-#     def validate_email(self, email):
-#         existing = UserData.objects.filter(email=email).first()
-#         if existing:
-#             raise serializers.ValidationError('Someone with that email has already exist')
-#         return email
-
-#     def validate(self, data):
-#         if not data.get('password') or not data.get('confirm_password'):
-#             raise serializers.ValidationError('Please enter a password and confirm it.')
-#         if data.get('password') != data.get('confirm_password'):
-#             raise serializers.ValidationError('Password Doesnot match.')
-#         return data
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
+    """ User registration serializer class """
+   
+    username = serializers.CharField(help_text="Enter your Username.",write_only=True,)
+    email = serializers.EmailField(required=True,help_text="Enter your Email.")
+    first_name = serializers.CharField(required=True,help_text="Enter your Firstname.")
+    last_name = serializers.CharField(required=True,help_text="Enter your Lastname.")
+    address = serializers.CharField(required=True, help_text="Enter your Address.")
+    password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Enter your Password.")
+
     class Meta:
         model = UserData
-        fields = ['username','email','user_type','password','password2']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = ['id','username','first_name','last_name','email','password','date_joined','address','pincode','user_type','country_id','state_id']
 
-    def save(self):
-        userdata = UserData(
-            email = self.validated_data['email'],
-            username=self.validated_data['username'],
+
+    def validate_email(self, email):
+        """ Email Validation function """
+        existing = UserData.objects.filter(email=email).first()
+        if existing:
+            raise serializers.ValidationError('Someone with that email has already exist')
+        return email
+
+
+    def create(self, validated_data):
+        user = UserData.objects.create(
+            username = validated_data['username'],
+            email = validated_data['email'],
+            user_type = validated_data['user_type'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            address = validated_data['address'],
+            password = make_password(validated_data.get('password')),
         )
-        password = self.validated_data(['password'])
-        password2 = self.validated_data('password2')
+        return user
 
-        if password != password2:
-            raise serializers.ValidationError({'password':'Password must match.'})
-        userdata.set_password(password)
-        userdata.save()
-        return userdata
+'''
+class UserRegistrationSerializer(serializers.Serializer):
+    type = (
+        ('1', 'Public'),
+        ('2','Municipality'),
+    )
+    username = serializers.CharField(help_text="Enter your Username.",write_only=True,)
+    email = serializers.EmailField(required=True,help_text="Enter your Email.")
+    first_name = serializers.CharField(required=True,help_text="Enter your Firstname.")
+    last_name = serializers.CharField(required=True,help_text="Enter your Lastname.")
+    address = serializers.CharField(required=True, help_text="Enter your Address.")
+    user_type = serializers.ChoiceField(choices=type,default=1,help_text="Please select your user type.")
+    password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Enter your Password.")
+    confirm_password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Confirm your password.")
+
+    def validate_email(self, email):
+        existing = UserData.objects.filter(email=email).first()
+        if existing:
+            raise serializers.ValidationError('Someone with that email has already exist')
+        return email
+
+    def validate(self, data):
+        if not data.get('password') or not data.get('confirm_password'):
+            raise serializers.ValidationError('Please enter a password and confirm it.')
+        if data.get('password') != data.get('confirm_password'):
+            raise serializers.ValidationError('Password Doesnot match.')
+        return data
+
+    def create(self, validated_data):
+        user = UserData.objects.create(
+            username = validated_data['username'],
+            email = validated_data['email'],
+            user_type = validated_data['user_type'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            address = validated_data['address'],
+            password = make_password(validated_data.get('password')),
+        )
+        return user
+
+'''
+
+# fields = ['id','username','first_name','last_name','email','date_joined','address','pincode','user_type','country_id','state_id']
+
