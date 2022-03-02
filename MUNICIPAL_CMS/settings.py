@@ -130,8 +130,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 MEDIA_URL = '/images/'
-AUTH_USER_MODEL = 'api.UserData'
-ACCOUNT_EMAIL_REQUIRED = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -143,4 +141,4 @@ STATICFILES_DIRS = [
     ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
-AUTH_USER_MODEL = 'api.UserData'
+# AUTH_USER_MODEL = 'api.UserData'

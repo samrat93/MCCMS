@@ -10,11 +10,13 @@ router.register('complaint-category', views.ComplaintCategoryApiViewSet)
 router.register('complaint-sub-category', views.ComplaintSubCategoryApiViewSet)
 router.register('municipality', views.MunicipalityApiViewSet)
 router.register('complaint', views.ComplaintApiViewSet)
-router.register('user-data',views.UserRegistrationViewSet)
+router.register('user-profile',views.UserProfileApiViewSet)
+router.register('register',views.UserRegistrationViewSet)
+
 
 
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('login/', views.UserLoginApiView.as_view()),
+    # path('login/', views.UserLoginApiView.as_view()),
 ]

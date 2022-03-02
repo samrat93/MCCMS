@@ -48,33 +48,37 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True,help_text="Enter your Email.")
     first_name = serializers.CharField(required=True,help_text="Enter your Firstname.")
     last_name = serializers.CharField(required=True,help_text="Enter your Lastname.")
-    address = serializers.CharField(required=True, help_text="Enter your Address.")
     password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Enter your Password.")
 
     class Meta:
-        model = UserData
-        fields = ['id','username','first_name','last_name','email','password','date_joined','address','pincode','user_type','country_id','state_id']
-
-
+        model = User
+        fields = ['id','username','first_name','last_name','email','password']
+        # extra_kwargs = {'email':{'validators':[]}}
+        
     def validate_email(self, email):
         """ Email Validation function """
-        existing = UserData.objects.filter(email=email).first()
+        existing = User.objects.filter(email=email).first()
         if existing:
             raise serializers.ValidationError('Someone with that email has already exist')
         return email
 
-
     def create(self, validated_data):
-        user = UserData.objects.create(
+        user = User.objects.create(
             username = validated_data['username'],
             email = validated_data['email'],
-            user_type = validated_data['user_type'],
             first_name = validated_data['first_name'],
             last_name = validated_data['last_name'],
-            address = validated_data['address'],
             password = make_password(validated_data.get('password')),
         )
         return user
+
+
+class userProfileSerializer(serializers.ModelSerializer):
+    """ Serializer for Userprofile """
+    class Meta:
+        model = UserProfile
+        fields = ['id','contact_no','address','pincode','user_type','user_image','country_id','state_id','user_id']
+
 
 '''
 class UserRegistrationSerializer(serializers.Serializer):

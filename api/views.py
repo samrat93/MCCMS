@@ -4,15 +4,15 @@ from django import views
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
-from rest_framework import generics, permissions
+from rest_framework import permissions
 from .permission import UpdateOwnProfile
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.settings import api_settings
 
 
-
 # Create your views here.
+
 class UserLoginApiView(ObtainAuthToken):
     """ Django login for tokan authentication """
 
@@ -55,20 +55,22 @@ class ComplaintApiViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
-# class UserDataApiViewSet(viewsets.ModelViewSet):
-#     serializer_class = UserDataSerializer
-#     queryset = UserData.objects.all()
-#     permission_classes = [permissions.IsAdminUser]
+class UserProfileApiViewSet(viewsets.ModelViewSet):
+    serializer_class = userProfileSerializer
+    queryset = UserProfile.objects.all()
+    # authentication_class = (TokenAuthentication)
+    permission_classes = [UpdateOwnProfile]
+
 
 
 
 class UserRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRegistrationSerializer
-    queryset = UserData.objects.all()
+    queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
     permission_classes = [UpdateOwnProfile]
 
 
 
-    
-    
+
+

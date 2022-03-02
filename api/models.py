@@ -1,9 +1,8 @@
-from tkinter import CASCADE, SEL_LAST
 from django.db import models
-from datetime import datetime,date
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-from sqlalchemy import null
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -34,7 +33,7 @@ class Municipality(models.Model):
 
     municipality_name = models.CharField(max_length=100)
     municipality_address = models.CharField(max_length=500)
-    # country = models.ForeignKey(Country,on_delete=models.CASCADE)
+    is_verified = models.BooleanField(default=False)
     state = models.ForeignKey(State,on_delete=models.CASCADE)
     municipality_desc = models.TextField(blank=True,null=True)
     phone_regex = RegexValidator(regex="^(\+\d{1,3})?,?\s?\d{8,13}")
@@ -43,19 +42,20 @@ class Municipality(models.Model):
     posting_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updation_date = models.DateField(auto_now_add=False, auto_now=True,blank=True)
 
+
     def __str__(self):
         return self.municipality_name
 
 
 
-class UserData(AbstractUser):
+class UserProfile(models.Model):
     """ Custom user model to add extra field in django table """
 
     user_type = (
         ('1', 'Public'),
         ('2','Municipality'),
     )
-
+    user_id = models.OneToOneField(User,on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex="^(\+\d{1,3})?,?\s?\d{8,13}")
     contact_no = models.CharField(validators=[phone_regex], verbose_name=("Mobile Number"),max_length=17, blank=True,null=True)
     address = models.CharField(max_length=1024, blank=True,null=True)
@@ -102,7 +102,7 @@ class Complain(models.Model):
         ('2','Closed'),
     )
 
-    user_id = models.ForeignKey(UserData,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     complaint_category = models.ForeignKey(Complaint_Category,on_delete=models.CASCADE)
     complaint_sub_category = models.ForeignKey(Complaint_Sub_Category,on_delete=models.CASCADE)
     state = models.ForeignKey(State,on_delete=models.CASCADE)
