@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from api.models import *
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth import password_validation, authenticate
+# from django.utils.translation import ugettext_lazy as _
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -54,13 +55,24 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username','first_name','last_name','email','password']
         # extra_kwargs = {'email':{'validators':[]}}
-        
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
+        return value
+
     def validate_email(self, email):
         """ Email Validation function """
         existing = User.objects.filter(email=email).first()
         if existing:
-            raise serializers.ValidationError('Someone with that email has already exist')
+            raise serializers.ValidationError('Someone with this email has already exist')
         return email
+
+    def validate_username(self, username):
+        """ Email Validation function """
+        existing = User.objects.filter(username=username).first()
+        if existing:
+            raise serializers.ValidationError('Someone with this username has already exist')
+        return username
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -80,6 +92,25 @@ class userProfileSerializer(serializers.ModelSerializer):
         fields = ['id','contact_no','address','pincode','user_type','user_image','country_id','state_id','user_id']
 
 
+# class LoginSerializers(serializers.Serializer):
+#     username = serializers.CharField(max_length = 35)
+#     password = serializers.CharField(
+#         label=_("Password"),
+#         style={'input_type': 'password'},
+#         trim_whitespace=False,
+#         max_length=128,
+#         write_only=True
+#     )
+#     def validate(self,data):
+#         username = data.get('username')
+#         password = data.get('password')
+#         if username and password:
+#             user = authenticate(request=self.context.get('request'),
+#                                 username=username, password=password)
+#             if not user:
+#                 # msg = _('Unable to log in with provided credentials.')
+#                 raise serializers.ValidationError('Unable to log in with provided credentials.')
+#             return  user
 '''
 class UserRegistrationSerializer(serializers.Serializer):
     type = (
