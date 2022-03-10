@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from unittest import TextTestRunner
+from rest_framework import serializers,exceptions
 from api.models import *
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import password_validation, authenticate
@@ -54,11 +55,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username','first_name','last_name','email','password']
-        # extra_kwargs = {'email':{'validators':[]}}
 
-    def validate_password(self, value):
-        password_validation.validate_password(value, self.instance)
-        return value
+    # def validate_password(self, value):
+    #     password_validation.validate_password(value, self.instance)
+    #     return value
 
     def validate_email(self, email):
         """ Email Validation function """
@@ -69,6 +69,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def validate_username(self, username):
         """ Email Validation function """
+
         existing = User.objects.filter(username=username).first()
         if existing:
             raise serializers.ValidationError('Someone with this username has already exist')
@@ -84,33 +85,80 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         return user
 
+        # fields = ('id','username','email','password','first_name','last_name','contact_no','address','pincode','user_type','user_image','country_id','state_id')
+        
+        
+        # extra_kwargs = {
+        #     'contact_no':{
+        #         'read_only':True
+        #     },
+        #     'address':{
+        #         'read_only':True
+        #     },
+        #     'pincode':{
+        #         'read_only':True
+        #     },
+        #     'user_image':{
+        #         'read_only':True
+        #     },
+        #     'country_id':{
+        #         'read_only':True
+        #     },
+        #     'state_id':{
+        #         'read_only':True
+        #     }
+        # }
 
-class userProfileSerializer(serializers.ModelSerializer):
-    """ Serializer for Userprofile """
+class ProfileSerializer(serializers.ModelSerializer):
+    """ User Profile Serializer """
+    # user = UserRegistrationSerializer(required = True)
     class Meta:
         model = UserProfile
-        fields = ['id','contact_no','address','pincode','user_type','user_image','country_id','state_id','user_id']
+        fields = ('id','contact_no','address','pincode','gender','user_image','user_type','country','state','user',)
+
+    def create(self, validated_data):
+        profile = UserProfile.objects.create(
+            contact_no = validated_data['contact_no'],
+            address = validated_data['address'],
+            pincode = validated_data['pincode'],
+            gender = validated_data['gender'],
+            user_image = validated_data['user_image'],
+            user_type = validated_data['user_type'],
+            country = validated_data['country'],
+            state = validated_data['state'],
+            user = validated_data['user'],
+        )
+       
+        return profile
 
 
-# class LoginSerializers(serializers.Serializer):
-#     username = serializers.CharField(max_length = 35)
-#     password = serializers.CharField(
-#         label=_("Password"),
-#         style={'input_type': 'password'},
-#         trim_whitespace=False,
-#         max_length=128,
-#         write_only=True
-#     )
-#     def validate(self,data):
-#         username = data.get('username')
-#         password = data.get('password')
-#         if username and password:
-#             user = authenticate(request=self.context.get('request'),
-#                                 username=username, password=password)
-#             if not user:
-#                 # msg = _('Unable to log in with provided credentials.')
-#                 raise serializers.ValidationError('Unable to log in with provided credentials.')
-#             return  user
+
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField()
+    password = serializers.CharField(style={'input_type': 'password'})
+
+    class Meta:
+        model = UserProfile
+        fields = ('username','password')
+        def validate(self,data):
+            user = authenticate(**data)
+            if user:
+                if user.is_active:
+                    data['user'] = user
+                    return data
+                raise exceptions.AuthenticationFailed('Account is not activated')
+            raise exceptions.AuthenticationFailed()
+
+
+
+
+# class userProfileSerializer(serializers.ModelSerializer):
+#     """ Serializer for Userprofile """
+
+#     class Meta:
+#         model = UserProfile
+#         fields = ('id','username','email','first_name','last_name','contact_no','address','pincode','user_type','user_image','country_id','state_id')
+
 '''
 class UserRegistrationSerializer(serializers.Serializer):
     type = (

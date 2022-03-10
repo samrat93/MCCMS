@@ -1,22 +1,48 @@
 
-from tokenize import Token
-from django import views
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
 from rest_framework import permissions
 from .permission import UpdateOwnProfile
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.settings import api_settings
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.response import Response
+from knox.views import LoginView
+from knox.auth import AuthToken
+# from rest_framework.authtoken.views import ObtainAuthToken
+# from tokenize import Token
+# from django.contrib.auth import login
+# from rest_framework.settings import api_settings
 
 
 # Create your views here.
 
-class UserLoginApiView(ObtainAuthToken):
-    """ Django login for tokan authentication """
+# class UserLoginApiView(ObtainAuthToken):
+#     """ Django login for tokan authentication """
 
-    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+#     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class LoginUserView(LoginView):
+    serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+
+    def post(self,request,*args,**kwargs):
+        serializer = AuthTokenSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+
+        _, token = AuthToken.objects.create(user)
+        return Response({
+            'user_Info':{
+                    'id':user.id,
+                    'username':user.username,
+                    'email':user.email
+            },
+            'token':token
+        })
+        # login(request,user)
+        # return super(LoginUserView,self ).post(request)
 
 
 class StateApiViewSet(viewsets.ModelViewSet):
@@ -56,9 +82,9 @@ class ComplaintApiViewSet(viewsets.ModelViewSet):
 
 
 class UserProfileApiViewSet(viewsets.ModelViewSet):
-    serializer_class = userProfileSerializer
+    serializer_class = ProfileSerializer
     queryset = UserProfile.objects.all()
-    # authentication_class = (TokenAuthentication)
+    authentication_class = (TokenAuthentication)
     permission_classes = [UpdateOwnProfile]
 
 

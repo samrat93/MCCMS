@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'api',
     'corsheaders',
+    'knox',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
     ],
     # 'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',)
 }
@@ -90,7 +92,7 @@ WSGI_APPLICATION = 'MUNICIPAL_CMS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mccms',
+        'NAME': 'CMS',
         'USER' : 'postgres',
         'PASSWORD':'123456789',
         'HOST' : 'localhost'
@@ -145,4 +147,4 @@ STATICFILES_DIRS = [
     ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
-# AUTH_USER_MODEL = 'api.UserData'
+AUTH_USER_MODEL = 'api.User'
