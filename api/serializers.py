@@ -1,3 +1,5 @@
+from dataclasses import field
+from pyexpat import model
 from unittest import TextTestRunner
 from rest_framework import serializers,exceptions
 from api.models import *
@@ -46,7 +48,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """ User registration serializer class """
    
-    username = serializers.CharField(help_text="Enter your Username.",write_only=True,)
+    username = serializers.CharField(required=True,help_text="Enter your Username.")
     email = serializers.EmailField(required=True,help_text="Enter your Email.")
     first_name = serializers.CharField(required=True,help_text="Enter your Firstname.")
     last_name = serializers.CharField(required=True,help_text="Enter your Lastname.")
@@ -54,8 +56,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','username','first_name','last_name','email','password']
-
+        fields = ['id','username','first_name','last_name','email','password','is_active','created']
+    
+        extra_kwargs = {
+                'is_active':{
+                    'read_only':True
+                },
+                'created':{
+                    'read_only':True,
+                    'format':'%Y-%m-%d',
+                },
+        }
     # def validate_password(self, value):
     #     password_validation.validate_password(value, self.instance)
     #     return value
@@ -130,6 +141,35 @@ class ProfileSerializer(serializers.ModelSerializer):
         )
        
         return profile
+
+class UserApprovalSerializer(serializers.ModelSerializer):
+    """ User Approval Serializer """
+
+    is_active = serializers.BooleanField(required=True)
+    
+    class Meta:
+        model =  User
+        # exclude = ['username','email','password']
+        fields = ('id','is_active','username','first_name','last_name','email')
+        extra_kwargs = {
+            'username':{
+                'read_only':True
+            },
+            'first_name':{
+                'read_only':True
+            },
+            'last_name':{
+                'read_only':True
+            },
+            'email':{
+                'read_only':True
+            },
+        }
+
+    def update(self, instance, validated_data):
+        instance.is_active = validated_data['is_active']
+        instance.save()
+        return instance
 
 
 

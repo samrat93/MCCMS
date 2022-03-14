@@ -1,4 +1,5 @@
 
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
@@ -10,6 +11,8 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 from knox.views import LoginView
 from knox.auth import AuthToken
+from rest_framework import generics, mixins, permissions
+
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from tokenize import Token
 # from django.contrib.auth import login
@@ -95,6 +98,28 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
     permission_classes = [UpdateOwnProfile]
+
+
+class UserApprovalAPIView(generics.UpdateAPIView):
+    serializer_class = UserApprovalSerializer
+    queryset = User.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+    
+
+    # parser_classes = (MultiPartParser, FormParser,)
+    # def get_object(self):
+    #     is_active = self.kwargs["is_active"]
+    #     obj = get_object_or_404(User,is_active=is_active)
+    #     return obj
+
+    # # def delete(self,request,*args,**kwargs):
+    # #     return self.destroy(request,*args, **kwargs)
+
+    # def put(self,request, *args, **kwargs):
+    #     return self.update(request, *args, **kwargs)
+
+
 
 
 

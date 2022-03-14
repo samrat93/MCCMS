@@ -2,6 +2,7 @@ from django.urls import path,include
 from knox import views as knox_views
 from rest_framework.routers import DefaultRouter
 from api import views
+app_name = 'api'
 
 
 router = DefaultRouter()
@@ -13,6 +14,7 @@ router.register('municipality', views.MunicipalityApiViewSet)
 router.register('complaint', views.ComplaintApiViewSet)
 router.register('user-profile',views.UserProfileApiViewSet)
 router.register('register',views.UserRegistrationViewSet)
+# router.register('approve',views.UserApprovalViewSet)
 
 
 
@@ -22,4 +24,5 @@ urlpatterns = [
     path('login/', views.LoginUserView.as_view()),
     path('api/logout/', knox_views.LogoutView.as_view()),
     path('api/logoutall/', knox_views.LogoutAllView.as_view()),
+    path('user-approve/<int:pk>',views.UserApprovalAPIView.as_view()),
 ]
