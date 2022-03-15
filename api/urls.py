@@ -3,6 +3,7 @@ from knox import views as knox_views
 from rest_framework.routers import DefaultRouter
 from api import views
 app_name = 'api'
+from .views import ChangePasswordView
 
 
 router = DefaultRouter()
@@ -22,7 +23,8 @@ router.register('register',views.UserRegistrationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('login/', views.LoginUserView.as_view()),
-    path('api/logout/', knox_views.LogoutView.as_view()),
-    path('api/logoutall/', knox_views.LogoutAllView.as_view()),
+    path('api/logout', knox_views.LogoutView.as_view()),
+    path('api/logoutall', knox_views.LogoutAllView.as_view()),
     path('user-approve/<int:pk>',views.UserApprovalAPIView.as_view()),
+    path('change_password/<int:pk>',ChangePasswordView.as_view()),
 ]

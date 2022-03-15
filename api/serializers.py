@@ -1,11 +1,11 @@
-from dataclasses import field
-from pyexpat import model
+
+from dataclasses import fields
 from unittest import TextTestRunner
 from rest_framework import serializers,exceptions
 from api.models import *
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import password_validation, authenticate
-# from django.utils.translation import ugettext_lazy as _
+from rest_framework.response import Response
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -67,9 +67,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                     'format':'%Y-%m-%d',
                 },
         }
-    # def validate_password(self, value):
-    #     password_validation.validate_password(value, self.instance)
-    #     return value
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
+        return value
 
     def validate_email(self, email):
         """ Email Validation function """
@@ -190,6 +191,32 @@ class LoginSerializer(serializers.ModelSerializer):
             raise exceptions.AuthenticationFailed()
 
 
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    """ Password Change serializer class """
+    new_password = serializers.CharField(write_only=True,required=True,validators=[password_validation.validate_password])
+    conf_Password = serializers.CharField(write_only=True,required=True)
+    old_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ('old_password','new_password','conf_Password')
+
+    def validate(self,attrs):
+        if attrs['new_password'] != attrs['conf_Password']:
+            raise serializers.ValidationError({"password":"Password fields doesn't match."})
+        return attrs
+
+    def validate_old_password(self,value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError({"old_password":"Old password is not correct"})
+        return value
+
+    def update(self,instance,validate_data):
+        instance.set_password(validate_data['new_password'])
+        instance.save()
+
+        return instance
 
 
 # class userProfileSerializer(serializers.ModelSerializer):
