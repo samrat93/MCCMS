@@ -52,13 +52,15 @@ class LoginUserView(LoginView):
 class StateApiViewSet(viewsets.ModelViewSet):
     serializer_class = StateSerializer
     queryset = State.objects.all()
-    permission_classes = [permissions.AllowAny]
+    authentication_class = (TokenAuthentication)
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class CountryApiViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
-    permission_classes = [permissions.AllowAny]
+    authentication_class = (TokenAuthentication)
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class MunicipalityApiViewSet(viewsets.ModelViewSet):
@@ -104,6 +106,7 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
 class UserApprovalAPIView(generics.UpdateAPIView):
     serializer_class = UserApprovalSerializer
     queryset = User.objects.all()
+    authentication_class = (TokenAuthentication)
     permission_classes = [permissions.IsAdminUser]
 
     
@@ -125,7 +128,8 @@ class ChangePasswordView(generics.UpdateAPIView):
     """ Password change view class """
     queryset = User.objects.all()
     serializer_class = ChangePasswordSerializer
-    permission_classes = [IsAuthenticated]
+    authentication_class = (TokenAuthentication)
+    permission_classes = [permissions.IsAuthenticated]
     
 
     # def get_object(self,queryset=None):

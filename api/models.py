@@ -131,7 +131,7 @@ class UserProfile(models.Model):
 class Complaint_Category(models.Model):
     """ Complaint category table """
 
-    category_name = models.CharField(max_length=100)
+    category_name = models.CharField(max_length=100,unique=True)
     category_desc = models.CharField(max_length=1000,null=True,blank=True)
     posting_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updation_date = models.DateField(auto_now_add=False, auto_now=True,blank=True)
@@ -142,9 +142,9 @@ class Complaint_Category(models.Model):
 
 class Complaint_Sub_Category(models.Model):
     """ Sub category of complaint_category table """
-    sub_category_name = models.CharField(max_length=100)
+    sub_category_name = models.CharField(max_length=100,unique=True)
     sub_category_desc = models.CharField(max_length=1000,null=True,blank=True)
-    category_id = models.ForeignKey(Complaint_Category,on_delete=models.CASCADE,blank=True,null=True)
+    category_id = models.ForeignKey(Complaint_Category,on_delete=models.CASCADE)
     posting_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updation_date = models.DateField(auto_now_add=False, auto_now=True,blank=True)
 

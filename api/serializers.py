@@ -194,15 +194,15 @@ class LoginSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.ModelSerializer):
     """ Password Change serializer class """
     new_password = serializers.CharField(write_only=True,required=True,validators=[password_validation.validate_password])
-    conf_Password = serializers.CharField(write_only=True,required=True)
+    conf_password = serializers.CharField(write_only=True,required=True)
     old_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
-        fields = ('old_password','new_password','conf_Password')
+        fields = ('old_password','new_password','conf_password')
 
     def validate(self,attrs):
-        if attrs['new_password'] != attrs['conf_Password']:
+        if attrs['new_password'] != attrs['conf_password']:
             raise serializers.ValidationError({"password":"Password fields doesn't match."})
         return attrs
 
