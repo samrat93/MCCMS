@@ -41,7 +41,8 @@ class LoginUserView(LoginView):
             'user_Info':{
                     'id':user.id,
                     'username':user.username,
-                    'email':user.email
+                    'email':user.email,
+                    'is_superuser':user.is_superuser,
             },
             'token':token
         })
