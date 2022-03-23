@@ -1,5 +1,6 @@
 
 
+from flask import request
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
@@ -85,7 +86,10 @@ class ComplaintSubCategoryApiViewSet(viewsets.ModelViewSet):
 class ComplaintApiViewSet(viewsets.ModelViewSet):
     serializer_class = ComplaintSerializer
     queryset = Complain.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
+    # def perform_create(self, serializer):
+    #     complaint_file = self.request.FILES['complaint_file']
+    #     return super().perform_create(serializer)
 
 
 class UserProfileApiViewSet(viewsets.ModelViewSet):

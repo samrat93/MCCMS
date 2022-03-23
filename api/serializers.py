@@ -1,6 +1,7 @@
 
 from dataclasses import fields
 from unittest import TextTestRunner
+from unittest.util import _MAX_LENGTH
 from rest_framework import serializers,exceptions
 from api.models import *
 from django.contrib.auth.hashers import make_password
@@ -39,10 +40,13 @@ class ComplaintSubCategorySerializer(serializers.ModelSerializer):
 
 
 class ComplaintSerializer(serializers.ModelSerializer):
+    # complaint_file = image = Base64ImageField(
+    #     max_length=None, use_url=True,
+    # )
     class Meta:
         model = Complain
-        fields = '__all__'
-
+        fields = ['complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id']
+    
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -56,10 +60,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','username','first_name','last_name','email','password','is_active','created']
+        fields = ['id','username','first_name','last_name','email','password','is_active','created','is_superuser']
     
         extra_kwargs = {
                 'is_active':{
+                    'read_only':True
+                },
+                'is_superuser':{
                     'read_only':True
                 },
                 'created':{
@@ -126,7 +133,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     # user = UserRegistrationSerializer(required = True)
     class Meta:
         model = UserProfile
-        fields = ('id','contact_no','address','pincode','gender','user_image','user_type','country','state','user',)
+        fields = ('id','contact_no','address','pincode','gender','user_image','country','state','user',)
 
     def create(self, validated_data):
         profile = UserProfile.objects.create(
@@ -135,7 +142,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             pincode = validated_data['pincode'],
             gender = validated_data['gender'],
             user_image = validated_data['user_image'],
-            user_type = validated_data['user_type'],
             country = validated_data['country'],
             state = validated_data['state'],
             user = validated_data['user'],

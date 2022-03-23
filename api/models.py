@@ -124,6 +124,8 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return u'Profile of user:{0}'.format(self.user.email)
+    def __str__(self):
+        return self.user.username
 
 
 
@@ -157,10 +159,10 @@ class Complain(models.Model):
     status = (
         ('1','Pending'),
         ('2','Processing'),
-        ('2','Closed'),
+        ('3','Closed'),
     )
 
-    user_id = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     complaint_category = models.ForeignKey(Complaint_Category,on_delete=models.CASCADE)
     complaint_sub_category = models.ForeignKey(Complaint_Sub_Category,on_delete=models.CASCADE)
     state = models.ForeignKey(State,on_delete=models.CASCADE)
@@ -174,4 +176,11 @@ class Complain(models.Model):
 
     def __str__(self):
         return self.complaint_subject
+    # def image_img(self):
+    #     if self.complaint_file:
+    #         return u'<img src="%s"width="50" height="50"/>'%self.complaint_file.url
+    #     else:
+    #         return '(Sin imagen)'
+    #     image_img.short_description ='Thumb'
+    #     image_img.allow_tags =True
     
