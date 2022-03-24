@@ -45,7 +45,22 @@ class ComplaintSerializer(serializers.ModelSerializer):
     # )
     class Meta:
         model = Complain
-        fields = ['complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id']
+        fields = ['id','complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id','complaint_date','updation_date','complaint_status']
+
+        extra_kwargs = {
+                'complaint_date':{
+                    'read_only':True
+                },
+                'updation_date':{
+                    'read_only':True
+                },
+                'id':{
+                    'read_only':True
+                },
+                'complaint_status':{
+                    'read_only':True
+                },
+        }
     
 
 
@@ -130,7 +145,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """ User Profile Serializer """
-    # user = UserRegistrationSerializer(required = True)
+    user = UserRegistrationSerializer(read_only = True)
     class Meta:
         model = UserProfile
         fields = ('id','contact_no','address','pincode','gender','user_image','country','state','user',)

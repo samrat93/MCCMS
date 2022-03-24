@@ -184,3 +184,16 @@ class Complain(models.Model):
     #     image_img.short_description ='Thumb'
     #     image_img.allow_tags =True
     
+
+class ComplaintRemarks(models.Model):
+    """ Complaint History table """
+
+    status = (
+        ('1','Pending'),
+        ('2','Processing'),
+        ('3','Closed'),
+    )
+    complaint_number = models.ForeignKey(Complain,on_delete=models.CASCADE)
+    complaint_status = models.CharField(max_length=10, choices=status,blank=True,null=True)
+    remarks = models.TextField(null=True,blank=True)
+    remarks_date = models.DateTimeField()

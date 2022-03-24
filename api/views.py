@@ -43,6 +43,8 @@ class LoginUserView(LoginView):
                     'id':user.id,
                     'username':user.username,
                     'email':user.email,
+                    'first_name':user.first_name,
+                    'last_name':user.last_name,
                     'is_superuser':user.is_superuser,
             },
             'token':token
@@ -105,7 +107,7 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRegistrationSerializer
     queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
-    permission_classes = [UpdateOwnProfile]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UserApprovalAPIView(generics.UpdateAPIView):
