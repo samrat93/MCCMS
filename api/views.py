@@ -107,7 +107,7 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRegistrationSerializer
     queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class UserApprovalAPIView(generics.UpdateAPIView):

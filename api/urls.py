@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 from api import views
 app_name = 'api'
 from .views import ChangePasswordView
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 router = DefaultRouter()
