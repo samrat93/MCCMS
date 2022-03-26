@@ -196,4 +196,4 @@ class ComplaintRemarks(models.Model):
     complaint_number = models.ForeignKey(Complain,on_delete=models.CASCADE)
     complaint_status = models.CharField(max_length=10, choices=status,blank=True,null=True)
     remarks = models.TextField(null=True,blank=True)
-    remarks_date = models.DateTimeField()
+    remarks_date = models.DateTimeField(auto_now_add=True)

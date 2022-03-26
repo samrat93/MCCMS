@@ -17,7 +17,9 @@ router.register('municipality', views.MunicipalityApiViewSet)
 router.register('complaint', views.ComplaintApiViewSet)
 router.register('user-profile',views.UserProfileApiViewSet)
 router.register('register',views.UserRegistrationViewSet)
-# router.register('approve',views.UserApprovalViewSet)
+router.register('complaint-remarks',views.ComplaintRemarksViewSet)
+# router.register('complaint-remarks-update',views.ComplaintRemarksUpdateViewSet)
+
 
 
 
@@ -29,4 +31,7 @@ urlpatterns = [
     path('api/logoutall', knox_views.LogoutAllView.as_view()),
     path('user-approve/<int:pk>',views.UserApprovalAPIView.as_view()),
     path('change_password/<int:pk>',ChangePasswordView.as_view()),
+    path('complaint_remarks_update/<int:pk>',views.ComplaintRemarksUpdateViewSet.as_view()),
+    
+
 ]

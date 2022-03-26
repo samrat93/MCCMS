@@ -139,6 +139,21 @@ class ChangePasswordView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     
 
+class ComplaintRemarksViewSet(viewsets.ModelViewSet):
+    """ Complaint Remarks Adding view class """
+    queryset = ComplaintRemarks.objects.all()
+    serializer_class = ComplaintRemarksSerializer
+    authentication_class = (TokenAuthentication)
+    permission_classes = [permissions.IsAdminUser]
+
+
+class ComplaintRemarksUpdateViewSet(generics.UpdateAPIView):
+    """ Complaint Remarks update view """
+    queryset = Complain.objects.all()
+    serializer_class = ComplaintStatusUpdateSerializer
+    authentication_class = (TokenAuthentication)
+    permission_classes = [permissions.IsAdminUser]
+
     # def get_object(self,queryset=None):
     #     obj = self.request.user
     #     return obj

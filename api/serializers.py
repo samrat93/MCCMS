@@ -240,6 +240,51 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ComplaintRemarksSerializer(serializers.ModelSerializer):
+    """ Complaint remarks serializers """
+    class Meta:
+        model = ComplaintRemarks
+        fields = '__all__'
+
+
+class ComplaintStatusUpdateSerializer(serializers.ModelSerializer):
+    """ Serializer class for updating only complaint status """   
+    complaint_status = serializers.IntegerField(required=True)
+    class Meta:
+        model = Complain
+        fields = ['id','complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id','complaint_date','updation_date','complaint_status']
+
+        extra_kwargs = {
+                'complaint_date':{
+                    'read_only':True
+                },
+                'updation_date':{
+                    'read_only':True
+                },
+                'user_id':{
+                    'read_only':True
+                },
+                'complaint_subject':{
+                    'read_only':True
+                },
+                'complaint_details':{
+                    'read_only':True
+                },
+                'complaint_file':{
+                    'read_only':True
+                },
+                'state':{
+                    'read_only':True
+                },
+                'complaint_category':{
+                    'read_only':True
+                },
+                'complaint_sub_category':{
+                    'read_only':True
+                },
+        }
+     
+
 # class userProfileSerializer(serializers.ModelSerializer):
 #     """ Serializer for Userprofile """
 
