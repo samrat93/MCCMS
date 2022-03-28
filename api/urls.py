@@ -18,6 +18,7 @@ router.register('complaint', views.ComplaintApiViewSet)
 router.register('user-profile',views.UserProfileApiViewSet)
 router.register('register',views.UserRegistrationViewSet)
 router.register('complaint-remarks',views.ComplaintRemarksViewSet)
+router.register('feedback',views.FeedbackApiView)
 # router.register('complaint-remarks-update',views.ComplaintRemarksUpdateViewSet)
 
 

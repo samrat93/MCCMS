@@ -245,11 +245,17 @@ class ComplaintRemarksSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComplaintRemarks
         fields = '__all__'
+        extra_kwargs = {
+                'remarks_date':{
+                    'read_only':True,
+                    'format':'%Y-%m-%d %H:%M:%S',
+                }
+        }
 
 
 class ComplaintStatusUpdateSerializer(serializers.ModelSerializer):
     """ Serializer class for updating only complaint status """   
-    complaint_status = serializers.IntegerField(required=True)
+    complaint_status = serializers.CharField(required=True)
     class Meta:
         model = Complain
         fields = ['id','complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id','complaint_date','updation_date','complaint_status']
@@ -285,12 +291,18 @@ class ComplaintStatusUpdateSerializer(serializers.ModelSerializer):
         }
      
 
-# class userProfileSerializer(serializers.ModelSerializer):
-#     """ Serializer for Userprofile """
 
-#     class Meta:
-#         model = UserProfile
-#         fields = ('id','username','email','first_name','last_name','contact_no','address','pincode','user_type','user_image','country_id','state_id')
+class FeedbackSerializer(serializers.ModelSerializer):
+    """ feedback serializer class """
+    class Meta:
+        model = Feedback
+        fields = '__all__'
+        extra_kwargs = {
+            'is_delete':{
+                'read_only':True
+            }
+        }
+
 
 '''
 class UserRegistrationSerializer(serializers.Serializer):

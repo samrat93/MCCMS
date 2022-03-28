@@ -154,6 +154,13 @@ class ComplaintRemarksUpdateViewSet(generics.UpdateAPIView):
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.IsAdminUser]
 
+
+class FeedbackApiView(viewsets.ModelViewSet):
+    """ Feedback view """
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
+    permission_classes = [permissions.AllowAny]
+
     # def get_object(self,queryset=None):
     #     obj = self.request.user
     #     return obj

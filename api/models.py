@@ -170,7 +170,7 @@ class Complain(models.Model):
     complaint_subject = models.CharField(max_length=500,blank=True,null=True)
     complaint_details = models.TextField(blank=True)
     complaint_file = models.ImageField(null=True,blank=True)
-    complaint_status = models.CharField(max_length=10, choices=status,default=1)
+    complaint_status = models.CharField(max_length=10, choices=status)
     complaint_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updation_date = models.DateField(auto_now_add=False, auto_now=True,blank=True)
 
@@ -189,7 +189,7 @@ class ComplaintRemarks(models.Model):
     """ Complaint History table """
 
     status = (
-        ('1','Pending'),
+        
         ('2','Processing'),
         ('3','Closed'),
     )
@@ -197,3 +197,12 @@ class ComplaintRemarks(models.Model):
     complaint_status = models.CharField(max_length=10, choices=status,blank=True,null=True)
     remarks = models.TextField(null=True,blank=True)
     remarks_date = models.DateTimeField(auto_now_add=True)
+
+class Feedback(models.Model):
+    """ Feedback model """
+    name = models.CharField( max_length=100)
+    email = models.EmailField(unique=True)
+    subject = models.CharField(max_length=200)
+    message = models.TextField(blank=True,null=True)
+    reg_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
+    is_delete = models.BooleanField(blank=True,null=True, default=False)
