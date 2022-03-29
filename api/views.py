@@ -1,6 +1,4 @@
 
-
-from flask import request
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
@@ -14,6 +12,8 @@ from knox.views import LoginView
 from knox.auth import AuthToken
 from rest_framework import generics, permissions
 from rest_framework import status
+from django.core.mail import send_mail
+from.emails import send_otp_via_email
 
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from tokenize import Token
@@ -102,12 +102,20 @@ class UserProfileApiViewSet(viewsets.ModelViewSet):
 
 
 
-
 class UserRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRegistrationSerializer
     queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.AllowAny]
+
+    # def update(self, request, *args, **kwargs):
+    #    serializer = UserRegistrationSerializer(data = request.data)
+    #    if serializer.is_valid():
+    #        user_email = serializer.data['email']
+    #        send_otp_via_email(user_email)
+    #        return Response(serializer.data)
+
+
 
 
 class UserApprovalAPIView(generics.UpdateAPIView):

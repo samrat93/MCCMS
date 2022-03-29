@@ -109,6 +109,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Someone with this username has already exist')
         return username
 
+    def get_user_email(self,email):
+        return email
+
+
     def create(self, validated_data):
         user = User.objects.create(
             username = validated_data['username'],
@@ -300,7 +304,14 @@ class FeedbackSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'is_delete':{
                 'read_only':True
+            },
+            'is_reg_user':{
+                'read_only':True
+            },
+            'reg_date':{
+                'format':'%Y-%m-%d %H:%M:%S',
             }
+            
         }
 
 

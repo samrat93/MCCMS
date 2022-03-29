@@ -204,5 +204,6 @@ class Feedback(models.Model):
     email = models.EmailField(unique=True)
     subject = models.CharField(max_length=200)
     message = models.TextField(blank=True,null=True)
-    reg_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
+    reg_date = models.DateTimeField(auto_now_add=True,auto_now=False,blank=True)
     is_delete = models.BooleanField(blank=True,null=True, default=False)
+    is_reg_user = models.BooleanField(blank=True,null=True,default=False)
