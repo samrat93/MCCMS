@@ -14,6 +14,8 @@ from rest_framework import generics, permissions
 from rest_framework import status
 from django.core.mail import send_mail
 from.emails import send_otp_via_email
+from .myPaginations import MyPageNumberPagination
+
 
 # from rest_framework.authtoken.views import ObtainAuthToken
 # from tokenize import Token
@@ -107,6 +109,7 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.AllowAny]
+    pagination_class = MyPageNumberPagination
 
     # def update(self, request, *args, **kwargs):
     #    serializer = UserRegistrationSerializer(data = request.data)
