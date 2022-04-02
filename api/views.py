@@ -15,6 +15,7 @@ from rest_framework import status
 from django.core.mail import send_mail
 from.emails import send_otp_via_email
 from .myPaginations import MyPageNumberPagination
+from django.db.models import Count
 
 
 # from rest_framework.authtoken.views import ObtainAuthToken
@@ -117,6 +118,10 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     #        user_email = serializer.data['email']
     #        send_otp_via_email(user_email)
     #        return Response(serializer.data)
+
+# class TotalActiveUser(generics.ListAPIView):
+#     queryset = User.objects.alias(entries = Count('is_active')).filter(entries__gt = True)
+#     print(queryset)
 
 
 
