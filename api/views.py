@@ -79,13 +79,13 @@ class MunicipalityApiViewSet(viewsets.ModelViewSet):
 class ComplaintCategoryApiViewSet(viewsets.ModelViewSet):
     serializer_class = ComplaintCategorySerializer
     queryset = Complaint_Category.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class ComplaintSubCategoryApiViewSet(viewsets.ModelViewSet):
     serializer_class = ComplaintSubCategorySerializer
     queryset = Complaint_Sub_Category.objects.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class ComplaintApiViewSet(viewsets.ModelViewSet):

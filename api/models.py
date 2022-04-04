@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import RegexValidator
@@ -170,7 +171,7 @@ class Complain(models.Model):
     complaint_subject = models.CharField(max_length=500,blank=True,null=True)
     complaint_details = models.TextField(blank=True)
     complaint_file = models.ImageField(null=True,blank=True)
-    complaint_status = models.CharField(max_length=10, choices=status)
+    complaint_status = models.CharField(max_length=10, choices=status,default=1)
     complaint_date = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updation_date = models.DateField(auto_now_add=False, auto_now=True,blank=True)
 
