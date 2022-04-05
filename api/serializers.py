@@ -1,7 +1,6 @@
 
 from dataclasses import fields
 from unittest import TextTestRunner
-from unittest.util import _MAX_LENGTH
 from rest_framework import serializers,exceptions
 from api.models import *
 from django.contrib.auth.hashers import make_password
@@ -149,7 +148,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """ User Profile Serializer """
-    user = UserRegistrationSerializer(read_only = True)
+    # userData = UserRegistrationSerializer(read_only = True)
+    user_image = serializers.ImageField(max_length=None,use_url=True,)
     class Meta:
         model = UserProfile
         fields = ('id','contact_no','address','pincode','gender','user_image','country','state','user',)
@@ -204,7 +204,7 @@ class LoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style={'input_type': 'password'})
 
     class Meta:
-        model = UserProfile
+        model = User
         fields = ('username','password')
         def validate(self,data):
             user = authenticate(**data)
