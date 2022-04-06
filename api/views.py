@@ -10,12 +10,10 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 from knox.views import LoginView
 from knox.auth import AuthToken
-from rest_framework import generics, permissions
-from rest_framework import status
-from django.core.mail import send_mail
-from.emails import send_otp_via_email
+from rest_framework import generics, permissions,status
 from .myPaginations import MyPageNumberPagination
-from django.db.models import Count
+from .utils import Util
+
 
 
 # from rest_framework.authtoken.views import ObtainAuthToken
@@ -132,19 +130,6 @@ class UserApprovalAPIView(generics.UpdateAPIView):
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.IsAdminUser]
 
-    
-
-    # parser_classes = (MultiPartParser, FormParser,)
-    # def get_object(self):
-    #     is_active = self.kwargs["is_active"]
-    #     obj = get_object_or_404(User,is_active=is_active)
-    #     return obj
-
-    # # def delete(self,request,*args,**kwargs):
-    # #     return self.destroy(request,*args, **kwargs)
-
-    # def put(self,request, *args, **kwargs):
-    #     return self.update(request, *args, **kwargs)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -171,38 +156,61 @@ class ComplaintRemarksUpdateViewSet(generics.UpdateAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-class FeedbackApiView(viewsets.ModelViewSet):
-    """ Feedback view """
-    queryset = Feedback.objects.all()
+# class FeedbackApiView(viewsets.ModelViewSet):
+#     """ Feedback view """
+#     queryset = Feedback.objects.all()
+#     serializer_class = FeedbackSerializer
+#     permission_classes = [permissions.AllowAny]
+
+class FeedbackApiView(generics.GenericAPIView):
     serializer_class = FeedbackSerializer
-    permission_classes = [permissions.AllowAny]
+    queryset = Feedback.objects.all()
 
-    # def get_object(self,queryset=None):
-    #     obj = self.request.user
-    #     return obj
+    def post(self,request):
+        user = request.data
+        serializer = self.serializer_class(data = user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        user_data = serializer.data
+        user = User.objects.get(email=user_data['email'])
+        email_body = 'Hello '+user.username + \
+            ' Thank you for your valuable feedback.'
+        data = {'email_body':email_body,'to_email':user.email,'email_subject':'Feedback'}
+        Util.send_email(data)
+        return Response(user_data,status=status.HTTP_201_CREATED)
 
-    # def update(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     serializer = self.get_serializer(data = request.data)
-
-    #     if serializer.is_valid():
-    #         # checking old password
-    #         if not self.object.check_password(serializer.data.get("old_password")):
-    #             return Response({"old_password": ["Old password is incorrect."]}, status=status.HTTP_400_BAD_REQUEST)
-            
-    #         self.object.set_password(serializer.data.get('new_password'))
-    #         self.object.save()
-    #         response = {
-    #             'status': 'success',
-    #             'code': status.HTTP_200_OK,
-    #             'message': 'Password updated successfully',
-    #             'data': []
-    #         }
-    #         return Response(response)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self,request,format=None):
+        feedbacks = Feedback.objects.all()
+        serializer = FeedbackSerializer(feedbacks,many=True)
+        return Response(serializer.data)
 
     
+# class RequestPasswordResetEmail(generics.GenericAPIView):
+#     """ Request password reset email """
+#     serializer_class = ResetPasswordEmailRequestSerializer
 
+#     def post(self, request):
+#         serializer = self.serializer_class(data=request.data)
+
+#         email = request.data.get('email', '')
+
+#         if User.objects.filter(email=email).exists():
+#             user = User.objects.get(email=email)
+#             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+#             token = PasswordResetTokenGenerator().make_token(user)
+#             current_site = get_current_site(
+#                 request=request).domain
+#             relativeLink = reverse(
+#                 'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+
+#             redirect_url = request.data.get('redirect_url', '')
+#             absurl = 'http://'+current_site + relativeLink
+#             email_body = 'Hello, \n Use link below to reset your password  \n' + \
+#                 absurl+"?redirect_url="+redirect_url
+#             data = {'email_body': email_body, 'to_email': user.email,
+#                     'email_subject': 'Reset your passsword'}
+#             Util.send_email(data)
+#         return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
 
 
 

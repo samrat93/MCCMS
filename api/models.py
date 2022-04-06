@@ -202,7 +202,7 @@ class ComplaintRemarks(models.Model):
 class Feedback(models.Model):
     """ Feedback model """
     name = models.CharField( max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     subject = models.CharField(max_length=200)
     message = models.TextField(blank=True,null=True)
     reg_date = models.DateTimeField(auto_now_add=True,auto_now=False,blank=True)
