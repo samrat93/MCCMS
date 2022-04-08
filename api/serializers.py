@@ -197,7 +197,7 @@ class UserApprovalSerializer(serializers.ModelSerializer):
         }
 
     def update(self, instance, validated_data):
-        instance.is_active = validated_data['is_active']
+        instance.is_active = validated_data.get('is_active',instance.is_active)
         instance.save()
         return instance
 
@@ -317,6 +317,16 @@ class FeedbackSerializer(serializers.ModelSerializer):
             }
             
         }
+
+
+class ForgetPasswordSerializer(serializers.ModelSerializer):
+    """" Forget password serializer class """
+    email = serializers.CharField(write_only=True,required=True)
+    class Meta:
+        model = User
+        fields = ('id','email')
+
+
 
 class ListUserSerializer(serializers.ModelSerializer):
     """ List of Reg Users """

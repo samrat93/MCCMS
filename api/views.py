@@ -1,4 +1,7 @@
 
+import email
+from functools import partial
+from requests import request
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
@@ -125,11 +128,28 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
 
 
 class UserApprovalAPIView(generics.UpdateAPIView):
-    serializer_class = UserApprovalSerializer
     queryset = User.objects.all()
+    serializer_class = UserApprovalSerializer
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.IsAdminUser]
+    # lookup_field = 'pk'
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            user_data = serializer.data
+            user = User.objects.get(email=user_data['email'])
+            email_body = 'Hello '+user.username + \
+                ' Congratulations 😊 Your account is activated. You can now login to your system.'
+            data = {'email_body':email_body,'to_email':user.email,'email_subject':'Account Activation'}
+            Util.send_email(data)
+            return Response({"message":"User is activated successfully"})
+        else:
+            return Response({"message": "failed", "details": serializer.errors})
+
+       
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -156,11 +176,6 @@ class ComplaintRemarksUpdateViewSet(generics.UpdateAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-# class FeedbackApiView(viewsets.ModelViewSet):
-#     """ Feedback view """
-#     queryset = Feedback.objects.all()
-#     serializer_class = FeedbackSerializer
-#     permission_classes = [permissions.AllowAny]
 
 class FeedbackApiView(generics.GenericAPIView):
     serializer_class = FeedbackSerializer
@@ -180,9 +195,24 @@ class FeedbackApiView(generics.GenericAPIView):
         return Response(user_data,status=status.HTTP_201_CREATED)
 
     def get(self,request,format=None):
-        feedbacks = Feedback.objects.all()
+        feedbacks = Feedback.objects.all() 
         serializer = FeedbackSerializer(feedbacks,many=True)
         return Response(serializer.data)
+
+
+class ForgetPasswordView(generics.GenericAPIView):
+    """ Forget password view class """
+    serializer_class = ForgetPasswordSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.get(id=self.kwargs['id'])
+        email_body = 'Hello '+queryset.username + \
+            ' Thank you for your valuable feedback.'
+        data = {'email_body':email_body,'to_email':queryset.email,'email_subject':'Feedback'}
+        Util.send_email(data)
+
+
+
 
 
 class UserListOnlyViewSet(viewsets.ModelViewSet):

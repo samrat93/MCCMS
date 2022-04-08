@@ -3,7 +3,7 @@ from knox import views as knox_views
 from rest_framework.routers import DefaultRouter
 from api import views
 app_name = 'api'
-from .views import ChangePasswordView,FeedbackApiView
+from .views import ChangePasswordView,FeedbackApiView,ForgetPasswordView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -34,6 +34,7 @@ urlpatterns = [
     path('user-approve/<int:pk>',views.UserApprovalAPIView.as_view()),
     path('change_password/<int:pk>',ChangePasswordView.as_view()),
     path('feedback',FeedbackApiView.as_view()),
+    path('forgetpass',ForgetPasswordView.as_view()),
     path('complaint_remarks_update/<int:pk>',views.ComplaintRemarksUpdateViewSet.as_view()),
     # path('user-list',UserListOnlyViewSet.as_view()),
     # path('request-reset-email/', RequestPasswordResetEmail.as_view(),
