@@ -184,6 +184,20 @@ class FeedbackApiView(generics.GenericAPIView):
         serializer = FeedbackSerializer(feedbacks,many=True)
         return Response(serializer.data)
 
+
+class UserListOnlyViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ListUserSerializer
+    authentication_class = (TokenAuthentication)
+    # permission_classes = [permissions.IsAuthenticated]
+
+    # def list(self, request):
+    #     # Note the use of `get_queryset()` instead of `self.queryset`
+    #     queryset = self.get_queryset()
+    #     serializer = ListUserSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+    
+    
     
 # class RequestPasswordResetEmail(generics.GenericAPIView):
 #     """ Request password reset email """

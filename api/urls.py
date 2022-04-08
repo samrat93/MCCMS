@@ -18,6 +18,7 @@ router.register('complaint', views.ComplaintApiViewSet)
 router.register('user-profile',views.UserProfileApiViewSet)
 router.register('register',views.UserRegistrationViewSet)
 router.register('complaint-remarks',views.ComplaintRemarksViewSet)
+router.register('user-list-only',views.UserListOnlyViewSet)
 # router.register('feedback',views.FeedbackApiView)
 # router.register('complaint-remarks-update',views.ComplaintRemarksUpdateViewSet)
 
@@ -34,6 +35,7 @@ urlpatterns = [
     path('change_password/<int:pk>',ChangePasswordView.as_view()),
     path('feedback',FeedbackApiView.as_view()),
     path('complaint_remarks_update/<int:pk>',views.ComplaintRemarksUpdateViewSet.as_view()),
+    # path('user-list',UserListOnlyViewSet.as_view()),
     # path('request-reset-email/', RequestPasswordResetEmail.as_view(),
     #      name="request-reset-email"),
     # path('password-reset/<uidb64>/<token>/',

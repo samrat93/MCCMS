@@ -318,6 +318,39 @@ class FeedbackSerializer(serializers.ModelSerializer):
             
         }
 
+class ListUserSerializer(serializers.ModelSerializer):
+    """ List of Reg Users """
+    class Meta:
+        model = User
+        fields = ['id','username','first_name','last_name','email','is_active','created','is_superuser']
+
+        extra_kwargs = {
+            'username':{
+                'read_only':True
+            },
+            'first_name':{
+                'read_only':True
+            },
+            'last_name':{
+                'read_only':True,
+            },
+             'email':{
+                'read_only':True,
+            },
+             'is_active':{
+                'read_only':True,
+            },
+             'created':{
+                'read_only':True,
+                'format':'%Y-%m-%d',
+            },
+             'is_superuser':{
+                'read_only':True,
+            }
+            
+        }
+     
+
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     """ Reset Email Request class """
