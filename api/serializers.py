@@ -43,9 +43,7 @@ class ComplaintSubCategorySerializer(serializers.ModelSerializer):
 
 
 class ComplaintSerializer(serializers.ModelSerializer):
-    # complaint_file = image = Base64ImageField(
-    #     max_length=None, use_url=True,
-    # )
+
     class Meta:
         model = Complain
         fields = ['id','complaint_subject','complaint_details','complaint_file','state','complaint_category','complaint_sub_category','user_id','complaint_date','updation_date','complaint_status']
@@ -105,7 +103,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return email
 
     def validate_username(self, username):
-        """ Email Validation function """
+        """ username Validation function """
 
         existing = User.objects.filter(username=username).first()
         if existing:
@@ -114,6 +112,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def get_user_email(self,email):
         return email
+    def get_user_username(self,username):
+        return username
 
 
     def create(self, validated_data):
@@ -126,33 +126,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         return user
 
-        # fields = ('id','username','email','password','first_name','last_name','contact_no','address','pincode','user_type','user_image','country_id','state_id')
-        
-        
-        # extra_kwargs = {
-        #     'contact_no':{
-        #         'read_only':True
-        #     },
-        #     'address':{
-        #         'read_only':True
-        #     },
-        #     'pincode':{
-        #         'read_only':True
-        #     },
-        #     'user_image':{
-        #         'read_only':True
-        #     },
-        #     'country_id':{
-        #         'read_only':True
-        #     },
-        #     'state_id':{
-        #         'read_only':True
-        #     }
-        # }
-
 class ProfileSerializer(serializers.ModelSerializer):
     """ User Profile Serializer """
-    # userData = UserRegistrationSerializer(read_only = True)
     user_image = serializers.ImageField(max_length=None,use_url=True,)
     class Meta:
         model = UserProfile
@@ -401,47 +376,5 @@ class SetNewPasswordSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
-'''
-class UserRegistrationSerializer(serializers.Serializer):
-    type = (
-        ('1', 'Public'),
-        ('2','Municipality'),
-    )
-    username = serializers.CharField(help_text="Enter your Username.",write_only=True,)
-    email = serializers.EmailField(required=True,help_text="Enter your Email.")
-    first_name = serializers.CharField(required=True,help_text="Enter your Firstname.")
-    last_name = serializers.CharField(required=True,help_text="Enter your Lastname.")
-    address = serializers.CharField(required=True, help_text="Enter your Address.")
-    user_type = serializers.ChoiceField(choices=type,default=1,help_text="Please select your user type.")
-    password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Enter your Password.")
-    confirm_password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'},help_text="Confirm your password.")
 
-    def validate_email(self, email):
-        existing = UserData.objects.filter(email=email).first()
-        if existing:
-            raise serializers.ValidationError('Someone with that email has already exist')
-        return email
-
-    def validate(self, data):
-        if not data.get('password') or not data.get('confirm_password'):
-            raise serializers.ValidationError('Please enter a password and confirm it.')
-        if data.get('password') != data.get('confirm_password'):
-            raise serializers.ValidationError('Password Doesnot match.')
-        return data
-
-    def create(self, validated_data):
-        user = UserData.objects.create(
-            username = validated_data['username'],
-            email = validated_data['email'],
-            user_type = validated_data['user_type'],
-            first_name = validated_data['first_name'],
-            last_name = validated_data['last_name'],
-            address = validated_data['address'],
-            password = make_password(validated_data.get('password')),
-        )
-        return user
-
-'''
-
-# fields = ['id','username','first_name','last_name','email','date_joined','address','pincode','user_type','country_id','state_id']
 

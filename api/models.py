@@ -177,14 +177,7 @@ class Complain(models.Model):
 
     def __str__(self):
         return self.complaint_subject
-    # def image_img(self):
-    #     if self.complaint_file:
-    #         return u'<img src="%s"width="50" height="50"/>'%self.complaint_file.url
-    #     else:
-    #         return '(Sin imagen)'
-    #     image_img.short_description ='Thumb'
-    #     image_img.allow_tags =True
-    
+
 
 class ComplaintRemarks(models.Model):
     """ Complaint History table """

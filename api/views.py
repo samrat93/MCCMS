@@ -1,7 +1,4 @@
 
-import email
-from functools import partial
-from requests import request
 from rest_framework import viewsets
 from api.models import *
 from .serializers import *
@@ -17,20 +14,6 @@ from rest_framework import generics, permissions,status
 from .myPaginations import MyPageNumberPagination
 from .utils import Util
 
-
-
-# from rest_framework.authtoken.views import ObtainAuthToken
-# from tokenize import Token
-# from django.contrib.auth import login
-# from rest_framework.settings import api_settings
-
-
-# Create your views here.
-
-# class UserLoginApiView(ObtainAuthToken):
-#     """ Django login for tokan authentication """
-
-#     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
 class LoginUserView(LoginView):
     serializer_class = LoginSerializer
@@ -113,17 +96,6 @@ class UserRegistrationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     pagination_class = MyPageNumberPagination
 
-    # def update(self, request, *args, **kwargs):
-    #    serializer = UserRegistrationSerializer(data = request.data)
-    #    if serializer.is_valid():
-    #        user_email = serializer.data['email']
-    #        send_otp_via_email(user_email)
-    #        return Response(serializer.data)
-
-# class TotalActiveUser(generics.ListAPIView):
-#     queryset = User.objects.alias(entries = Count('is_active')).filter(entries__gt = True)
-#     print(queryset)
-
 
 
 
@@ -132,7 +104,7 @@ class UserApprovalAPIView(generics.UpdateAPIView):
     serializer_class = UserApprovalSerializer
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.IsAdminUser]
-    # lookup_field = 'pk'
+
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -165,7 +137,7 @@ class ComplaintRemarksViewSet(viewsets.ModelViewSet):
     queryset = ComplaintRemarks.objects.all()
     serializer_class = ComplaintRemarksSerializer
     authentication_class = (TokenAuthentication)
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class ComplaintRemarksUpdateViewSet(generics.UpdateAPIView):
