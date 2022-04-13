@@ -91,7 +91,7 @@ class UserProfileApiViewSet(viewsets.ModelViewSet):
 
 class UserRegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRegistrationSerializer
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_superuser=False)
     authentication_class = (TokenAuthentication)
     permission_classes = [permissions.AllowAny]
     pagination_class = MyPageNumberPagination
